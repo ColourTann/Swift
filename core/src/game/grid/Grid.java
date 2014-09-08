@@ -55,9 +55,9 @@ public class Grid extends Updater{
 	private boolean timerAdded;
 	private boolean won;
 	public Timer fadeTimer=new Timer();
-	
+
 	public enum Gimmick{Mirror, Jump, Quake, Hardcore, BradyHaran};
-	
+
 	public Grid(int size){		
 		this.size=size;
 	}
@@ -65,50 +65,50 @@ public class Grid extends Updater{
 	public void init(){
 		Gimmick gimmick=null;
 		if(rounds%3==0)gimmick=Gimmick.values()[(int) (Math.random()*(Gimmick.values().length))];
-		
+
 		rounds++;
-		
+
 		order=0;
 		for(Player p:GameScreen.players){
 			p.dir=null;
 		}
 		timerAdded=false;
 		allowInput=false;
-		System.out.println(gimmick);
+		won=false;
 		Tile.init();
-
 		minDist=9;
 		Main.setNotSpinning();
+
 		if(gimmick!=null){
-		switch(gimmick){
-		case Hardcore:
-			minDist=20;
-			break;
-		case Jump:
-			Tile.init(1,3,20,.4f);
-			minDist=13;
-			break;
-		case Mirror:
-			Tile.init(3,90,2,.4f);
-			minDist=11;
-			break;
-		case Quake:
-			Tile.shaking=true;
-			break;
-		case BradyHaran:
-			Main.setSpinning();
-			break;
-		default:
-			break;
-		
+			switch(gimmick){
+			case Hardcore:
+				minDist=20;
+				break;
+			case Jump:
+				Tile.init(1,3,20,.4f);
+				minDist=13;
+				break;
+			case Mirror:
+				Tile.init(3,90,2,.4f);
+				minDist=11;
+				break;
+			case Quake:
+				Tile.shaking=true;
+				break;
+			case BradyHaran:
+				Main.setSpinning();
+				break;
+			default:
+				break;
+
+			}
 		}
-		}
-		
-		
+
+
 		while(!binit()){
 
 		}
-		
+
 		if(gimmick!=null){
 			String s="";
 			switch(gimmick){
@@ -129,13 +129,14 @@ public class Grid extends Updater{
 				break;
 			default:
 				break;
-			
+
 			}
 			TextWisp.wisps.add(new TextWisp(s, Font.big, new Pair(0,60),WispType.Regular));
-		}
-		
-		for(Tile t:tiles.values())t.finalise();
 
+		}
+
+		for(Tile t:tiles.values())t.finalise();
+		allPicked=false;
 		Timer t=new Timer(0,1,.19f,Interp.LINEAR);
 		t.addFinisher(new Finisher() {
 
@@ -165,9 +166,9 @@ public class Grid extends Updater{
 	}
 
 	public boolean binit() {
-		
-		
-		
+
+
+
 		flag=0;
 		Updater.clearAll();
 		ParticleSystem.clearAll();
@@ -213,7 +214,7 @@ public class Grid extends Updater{
 
 	private boolean test(Direction dir) {
 
-		
+
 
 
 
@@ -341,6 +342,8 @@ public class Grid extends Updater{
 			if(p.disc!=null)return;
 		}
 		if(allPicked&&orderedPlayers.size()==0){
+			timerAdded=true;
+			allPicked=false;
 			ArrayList<Player> winningPlayers=new ArrayList<Player>();
 			for(Player p:GameScreen.players){
 				if(p.score>=Player.maxScore){
@@ -357,7 +360,7 @@ public class Grid extends Updater{
 				Player.winningColor=victor.col;
 
 				fadeTimer=new Timer(0,1,.5f,Interp.LINEAR);
-
+				System.out.println("adding victory timer");
 				Timer t=new Timer(0,1,.2f,Interp.LINEAR);
 
 				Main.fadeInSpeed=.1f;
@@ -377,12 +380,13 @@ public class Grid extends Updater{
 
 
 
-			allPicked=false;
-			System.out.println("making new finisher");
 
+
+
+			System.out.println("adding timer because need to make new round");
 			Timer slide=new Timer(0,1,1,Interp.LINEAR);
 			slide.addFinisher(new Finisher() {
-
+				
 				@Override
 				public void finish() {
 					for(Tile tile: tiles.values()){
@@ -390,6 +394,8 @@ public class Grid extends Updater{
 					}
 				}
 			});
+
+
 
 
 			Timer t=new Timer(0,1,.3f,Interp.LINEAR);
@@ -401,7 +407,7 @@ public class Grid extends Updater{
 					init();
 				}
 			});
-			timerAdded=true;
+
 		}
 
 	}

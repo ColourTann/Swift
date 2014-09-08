@@ -40,7 +40,7 @@ public class Player {
 	public Direction dir;
 
 	public ArrayList<Disc> discs= new ArrayList<Disc>();
-	public static int maxScore=35;
+	public static int maxScore=18;
 	//public static int maxScore=1;
 	public Color col=Colours.randomColor();
 	Pair position;
@@ -151,9 +151,9 @@ public class Player {
 			case down:
 				return "A";
 			case left:
-				return "B";
-			case right:
 				return "X";
+			case right:
+				return "B";
 			case up:
 				return "Y";
 			default:
@@ -284,6 +284,7 @@ public class Player {
 	}
 
 	public void addDisc(Disc d){
+		if(d.instant)return;
 		Clip c=d.player==this?Sounds.good:Sounds.bad;
 		c.play();
 
