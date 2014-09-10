@@ -40,7 +40,7 @@ public class Player {
 	public Direction dir;
 
 	public ArrayList<Disc> discs= new ArrayList<Disc>();
-	public static int maxScore=18;
+	public static int maxScore=30;
 	//public static int maxScore=1;
 	public Color col=Colours.randomColor();
 	Pair position;
